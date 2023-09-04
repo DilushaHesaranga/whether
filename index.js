@@ -7,6 +7,12 @@ const port = process.env.PORT || 3000;
 // Serve static files (CSS, images, etc.) from a 'public' folder
 app.use(express.static('public'));
 
+// Replace 'YOUR_WEATHERBIT_API_KEY' with your actual Weatherbit API key
+const apiKey = 'YOUR_WEATHERBIT_API_KEY';
+const apiUrl = `https://api.weatherbit.io/v2.0/current?&key=${apiKey}`;
+
+app.use(express.json());
+
 // Define a route to render the HTML page
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -15,16 +21,21 @@ app.get('/', (req, res) => {
 // Define an API endpoint to fetch weather data
 app.get('/weather', async (req, res) => {
   try {
-    const { city, apiKey } = req.query;
-    if (!city || !apiKey) {
-      throw new Error('City and API key are required.');
+    const { city } = req.query;
+    if (!city) {
+      throw new Error('City is required.');
     }
 
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-    const response = await axios.get(apiUrl);
+    const response = await axios.get(`${apiUrl}&city=${city}`);
+    const weatherData = response.data.data[0];
 
-    const weatherData = response.data;
-    res.json(weatherData);
+    if (weatherData) {
+      const temperature = weatherData.temp;
+      const description = weatherData.weather.description;
+      res.json({ temperature, description });
+    } else {
+      res.json({ error: 'City not found.' });
+    }
   } catch (error) {
     console.error('Error:', error.message);
     res.status(400).json({ error: error.message });
