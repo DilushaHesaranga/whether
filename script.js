@@ -10,17 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Replace 'YOUR_API_KEY' with your OpenWeatherMap API key
-    const apiKey = 'da1327bd0946469a972e7ead42535237';
-
     try {
-      const response = await fetch(`/weather?city=${city}&apiKey=${apiKey}`);
+      const response = await fetch(`/weather?city=${city}`);
       const data = await response.json();
 
-      if (data.weather) {
-        const temperature = data.main.temp - 273.15; // Convert to Celsius
-        const description = data.weather[0].description;
-        weatherInfo.textContent = `Temperature: ${temperature.toFixed(2)}°C, Description: ${description}`;
+      if (data.temperature && data.description) {
+        const tempValue = document.getElementById('tempValue');
+        const descValue = document.getElementById('descValue');
+
+        tempValue.textContent = data.temperature;
+        descValue.textContent = data.description;
       } else {
         weatherInfo.textContent = 'City not found.';
       }
