@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static('public'));
 
 // Replace 'YOUR_WEATHERBIT_API_KEY' with your actual Weatherbit API key
-const apiKey = 'YOUR_WEATHERBIT_API_KEY';
+const apiKey = 'da1327bd0946469a972e7ead42535237';
 const apiUrl = `https://api.weatherbit.io/v2.0/current?&key=${apiKey}`;
 
 app.use(express.json());
